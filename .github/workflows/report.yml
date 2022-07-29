@@ -26,5 +26,7 @@ jobs:
       env:
         STUID: ${{ secrets.Stuid }}
         PASSWORD: ${{ secrets.Password }}
+        JJLXR: ${{ secrets.Jjlxr }}
+        JJDH: ${{ secrets.Jjdh }}
       run: |
-        python runme.py "$STUID" "$PASSWORD"
+        python runme.py "$STUID" "$PASSWORD" "$JJLXR" "$JJDH"
