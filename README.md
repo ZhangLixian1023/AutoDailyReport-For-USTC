@@ -34,10 +34,9 @@
 
 4. travelcard.py是用来生成行程卡的脚本。是通过拼贴数码的图片实现的。在travelcard.py里修改left,upper,right,down为截图中日期、时间部分的左上右下的位置。sour：行程卡截图的文件名，默认是xcko.jpg。dest：新生成的行程卡的文件名，默认是xck.jpg
 
-5. 主程序是runme.py。
-
-程序的逻辑是首先登录健康平台，如果登录失败会直接退出。
-然后按照选项去执行任务。
+5. 主程序是runme.py。\\
+程序的逻辑是首先登录健康平台，如果登录失败会直接退出。\\
+然后按照选项去执行任务。\\
 在做跨校区报备或出校报备之前，会先判断是否在校，如果不在校就不会进行。
 
 6. yml：在schedule cron部分设定执行任务的周期.在最下面写你要执行的任务
@@ -52,7 +51,7 @@
 
 10. 默认的打卡时间是每天的上午10:00。如需选择其它时间，可以修改`.github/workflows/report.yml`中的`cron`，详细说明参见[安排的事件](https://docs.github.com/cn/actions/reference/events-that-trigger-workflows#scheduled-events)，请注意这里使用的是**国际标准时间UTC**，北京时间的数值比它大8个小时。建议修改默认时间，避开打卡高峰期以提高成功率。
 
-11. 在Actions选项卡可以确认打卡情况。如果打卡失败（可能是临时网络问题等原因），脚本会自动重试，五次尝试后如果依然失败，将返回非零值提示构建失败。
+11. 在Actions选项卡可以确认打卡情况。
 
 12. 在Github个人设置页面的Notifications下可以设置Github Actions的通知，建议打开Email通知，并勾选"Send notifications for failed workflows only"。请及时查看邮件，如果失败会进行通知。
 
@@ -73,12 +72,12 @@ pip install -r requirements.txt
 ```shell
 python runme.py [STUID] [PASSWORD]
 ```
-其中，`[STUID]`是学号，`[PASSWORD]`是统一身份认证的密码明文.
-后面可以加上选项：
--r 上报健康信息 默认开，要关闭请加 -r n 
--u 更新行程卡 默认开，要关闭请加 -u n 
--c 跨校区报备 默认关，要开启请加 -c 或-c y 
--o 出校报备 默认关，要开启请加 -o 或-o y 
+其中，`[STUID]`是学号，`[PASSWORD]`是统一身份认证的密码明文.\\
+后面可以加上选项：\\
+-r 上报健康信息 默认开，要关闭请加 -r n \\
+-u 更新行程卡 默认开，要关闭请加 -u n \\
+-c 跨校区报备 默认关，要开启请加 -c 或-c y \\
+-o 出校报备 默认关，要开启请加 -o 或-o y \\
 如：不更新行程卡，进行跨校区报备
 ```shell
 python runme.py PB19890604 xjsdfjk -c -u n
