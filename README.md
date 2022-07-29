@@ -21,30 +21,42 @@
 - 20220510: 解决上传两码需要sign的问题
 - 20220513: **恭喜自动授权安康码**，不再需要自动上传安康码
 - 20220706: 增加对于不在校等状态的支持，可能有bug
-
+- 20220729: 修改了行程卡生成方式为截图拼贴，修改了登录部分代码绕开验证码
 ## 使用方法
 
 0. **写在前面：请在自己fork的仓库中修改，并push到自己的仓库，不要直接修改本仓库，也不要将您的修改pull request到本仓库（对本仓库的改进除外）！如果尚不了解github的基本使用方法，请参阅[使用议题和拉取请求进行协作/使用复刻](https://docs.github.com/cn/github/collaborating-with-issues-and-pull-requests/working-with-forks)和[使用议题和拉取请求进行协作/通过拉取请求提议工作更改](https://docs.github.com/cn/github/collaborating-with-issues-and-pull-requests/proposing-changes-to-your-work-with-pull-requests)。**
 
 1. 将本代码仓库fork到自己的github，并授权打卡系统从权威机构获取安康码信息。
 
-2. 根据自己的实际情况修改`runme.py`中37行以前的数据，修改`xcm.jpg`为自己的行程码，更改`newtime.py`中<code>bbox</code>数据使得更新的时间数据可以以假乱真。
+2. 修改上报信息：在runme.py里直接修改三个data即可
 
-3. 将修改好的代码提交到自己的仓库。
+3. 上传自己的行程卡：行程卡没法自动从微信小程序获取，因为需要手机验证。所以在这里实际上是利用截图伪造新日期的行程卡。从微信小程序的行程卡截图，存在目录下，建议把名字改为xcko.jpg。由于字体的缘故，截图必须从微信小程序！！
 
-4. 点击Actions选项卡，点击`I understand my workflows, go ahead and enable them`.
+4. travelcard.py是用来生成行程卡的脚本。是通过拼贴数码的图片实现的。在travelcard.py里修改left,upper,right,down为截图中日期、时间部分的左上右下的位置。sour：行程卡截图的文件名，默认是xcko.jpg。dest：新生成的行程卡的文件名，默认是xck.jpg
 
-5. 点击Settings选项卡，点击左侧Secrets，点击New secret，创建名为`STUID`，值为自己学号的secret。用同样方法，创建名为`PASSWORD`，值为自己统一身份认证密码的secret。以上数据不会被公开。
+5. 主程序是runme.py。
+
+程序的逻辑是首先登录健康平台，如果登录失败会直接退出。
+然后按照选项去执行任务。
+在做跨校区报备或出校报备之前，会先判断是否在校，如果不在校就不会进行。
+
+6. yml：在schedule cron部分设定执行任务的周期.在最下面写你要执行的任务
+
+7. 将修改好的代码提交到自己的仓库。
+
+8. 点击Actions选项卡，点击`I understand my workflows, go ahead and enable them`.
+
+9. 点击Settings选项卡，点击左侧Secrets，点击New secret，创建名为`STUID`，值为自己学号的secret。用同样方法，创建名为`PASSWORD`，值为自己统一身份认证密码的secret。以上数据不会被公开。
 
    ![secrets](imgs/image-20200826215037042.png)
 
-6. 默认的打卡时间是每天的上午5:10(建议5点之后，因为5点才会同步安康码)，可能会有（延后）几十分钟的浮动。如需选择其它时间，可以修改`.github/workflows/report.yml`中的`cron`，详细说明参见[安排的事件](https://docs.github.com/cn/actions/reference/events-that-trigger-workflows#scheduled-events)，请注意这里使用的是**国际标准时间UTC**，北京时间的数值比它大8个小时。建议修改默认时间，避开打卡高峰期以提高成功率。
+10. 默认的打卡时间是每天的上午10:00。如需选择其它时间，可以修改`.github/workflows/report.yml`中的`cron`，详细说明参见[安排的事件](https://docs.github.com/cn/actions/reference/events-that-trigger-workflows#scheduled-events)，请注意这里使用的是**国际标准时间UTC**，北京时间的数值比它大8个小时。建议修改默认时间，避开打卡高峰期以提高成功率。
 
-7. 在Actions选项卡可以确认打卡情况。如果打卡失败（可能是临时网络问题等原因），脚本会自动重试，五次尝试后如果依然失败，将返回非零值提示构建失败。
+11. 在Actions选项卡可以确认打卡情况。如果打卡失败（可能是临时网络问题等原因），脚本会自动重试，五次尝试后如果依然失败，将返回非零值提示构建失败。
 
-8. 在Github个人设置页面的Notifications下可以设置Github Actions的通知，建议打开Email通知，并勾选"Send notifications for failed workflows only"。请及时查看邮件，如果失败会进行通知。
+12. 在Github个人设置页面的Notifications下可以设置Github Actions的通知，建议打开Email通知，并勾选"Send notifications for failed workflows only"。请及时查看邮件，如果失败会进行通知。
 
-9. 如果觉得这个仓库对你有用的话，给个星星✨吧～
+13. 如果觉得这个仓库对你有用的话，给个星星✨吧～
 
 ## 在本地运行测试
 
@@ -57,11 +69,17 @@ pip install -r requirements.txt
 ```
 
 ### 运行打卡程序
-
+如果在本地进行测试，请执行：
 ```shell
 python runme.py [STUID] [PASSWORD]
 ```
-其中，`[STUID]`是学号，`[PASSWORD]`是统一身份认证的密码明文，剩下三个参数为是否出校报备、是否跨校区报备、是否每日打卡，默认不出校，跨校区，打卡。如
+其中，`[STUID]`是学号，`[PASSWORD]`是统一身份认证的密码明文.
+后面可以加上选项：
+-r 上报健康信息 默认开，要关闭请加 -r n 
+-u 更新行程卡 默认开，要关闭请加 -u n 
+-c 跨校区报备 默认关，要开启请加 -c 或-c y 
+-o 出校报备 默认关，要开启请加 -o 或-o y 
+如：不更新行程卡，进行跨校区报备
 ```shell
-python runme.py "PB19890604" "FREEDOM"
+python runme.py PB19890604 xjsdfjk -c -u n
 ```
