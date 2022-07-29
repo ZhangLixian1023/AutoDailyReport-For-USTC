@@ -2,6 +2,9 @@ import argparse
 from Report import Report
 # 要上传的数据
 report_data =[
+    ("jinji_lxr", "lxr"),
+    ("jiji_mobile", "12345"),
+    ("jinji_guanxi", "父"),
     ("juzhudi", "河南省郑州市新郑市"),
     ("body_condition", "1"),
     ("body_condition_detail", ""),
@@ -11,9 +14,6 @@ report_data =[
     ("last_touch_sars_detail", ""),
     ("is_danger", "0"),
     ("is_goto_danger", "0"),
-    ("jinji_lxr", "张昆"),
-    ("jinji_guanxi", "父"),
-    ("jiji_mobile", "13803714909"),
     ("other_detail", "")
 ]
 cross_campus_data = [
@@ -35,13 +35,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="学号密码必填. 其余项选填, 语法是 -a (表示y), -a y 或 -a n, 空缺则采取默认值")
     parser.add_argument("stuid", help="学号", type=str)
     parser.add_argument("password", help="密码", type=str)
+    parser.add_argument("jjlxr", help="紧急联系人", type=str)
+    parser.add_argument("jjdh", help="紧急电话", type=str)
     parser.add_argument('-r', help="上报健康信息, 默认值y",nargs='?', default='y',const='y',choices=['y','n'],metavar='y/n')
     parser.add_argument('-u',help="更新行程卡, 默认值y", nargs='?', default='y',const='y',choices=['y','n'],metavar='y/n')
     parser.add_argument('-c', help="跨校区, 默认值n", nargs='?', default='n',const='y',choices=['y','n'],metavar='y/n')
     parser.add_argument('-o',help="出校, 默认值n",nargs='?',  default='n',const='y',choices=['y','n'],metavar='y/n')
     args = parser.parse_args()
     autorepoter = Report(stuid=args.stuid, password=args.password)
-    
+    report_data[0]=("jinji_lxr", args.jjlxr)
+    report_data[1]=("jiji_mobile", args.jjdh)
     autorepoter.login.login()
     if args.r=='y':
         autorepoter.report(report_data)
