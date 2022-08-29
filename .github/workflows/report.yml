@@ -4,8 +4,6 @@ name: Auto-report action
 
 on: 
   workflow_dispatch:
-  schedule:
-    - cron: '10 23 * * *'
 
 jobs:
   default:
