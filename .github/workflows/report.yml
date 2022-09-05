@@ -3,6 +3,8 @@
 name: Auto-report action
 
 on: 
+  schedule:
+    - cron: "0 22 * * *"
   workflow_dispatch:
 
 jobs:
