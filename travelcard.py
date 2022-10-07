@@ -4,7 +4,7 @@ import time
 # 一定要从微信小程序通信行程卡截图！
 # 手动把要替换的位置找到，左，上，右，下
 def newcard(sour,dest):
-    (left,upper,right,down)=(410,702,873,745)
+    (left,upper,right,down)=(410,693,876,736)
     s=time.strftime("%Yd%md%ds%Hm%Mm%S",time.localtime(time.time()+8*3600-30))
     im_time = Image.new("RGB",(462,42),(255,255,255))
     current_place=0
