@@ -51,7 +51,7 @@ if __name__ == "__main__":
     if args.r=='y':
         autorepoter.report(report_data)
     if args.u=='y':
-        autorepoter.upload_code()
+        pass
 
     state=autorepoter.getstate()
     if args.c=='y':
