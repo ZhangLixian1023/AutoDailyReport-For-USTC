@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup
 from ustclogin import Login
 from datetime import timedelta
 from datetime import timezone
-from travelcard import newcard
 
 SHA_TZ = timezone(  # 北京时间
     timedelta(hours=8),
@@ -86,38 +85,4 @@ class Report(object):
             print("出校报备：成功")
             return True
         print("出校报备：失败")
-        return False
-
-    def upload_code(self):
-        data = self.login.session.get("https://weixine.ustc.edu.cn/2020/upload/xcm").text
-        data = data.encode("ascii", "ignore").decode("utf-8", "ignore")
-        token = data.split("_token")[-1].split("'")[1]
-        sign = data.split("sign")[-1].split("'")[2]
-        gid = data.split("gid")[-1].split("'")[2]
-        def run_update(fnm, t):
-            data = [
-                ("_token", token),
-                ("gid", gid),
-                ("t", t),
-                ("id", "WU_FILE_0"),
-                ("sign", sign),
-            ]
-            files = {
-                "file": (fnm,open(fnm, "rb"),"image/jpeg",{})
-            }
-            post = self.login.session.post("https://weixine.ustc.edu.cn/2020img/api/upload_for_student",data=data,files=files)
-            if "true" not in post.text:
-                return False
-            return True
-        sour='xcko.jpg'
-        dest='xck.jpg'
-        try:
-            newcard(sour,dest)
-        except:
-            print("行程卡：制作失败")
-            return False
-        if run_update(dest, 1):
-            print("行程卡：上传成功")
-            return True
-        print("行程卡：上传失败")
         return False
